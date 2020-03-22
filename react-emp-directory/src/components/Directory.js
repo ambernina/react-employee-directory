@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import Container from "./Container";
 import TRow from "./TRow";
-import { Input } from "semantic-ui-react";
+import SearchBar from "./Search";
 
 import moment from "moment";
+
+let filtered = false;
 
 class Directory extends Component {
 	state = {
@@ -14,34 +16,15 @@ class Directory extends Component {
 
 	componentDidMount() {
 		this.randomPerson();
-		// const res = fetch("https://randomuser.me/api/");
-		// const json = res.json();
-		// console.log("json", json);
-		// this.setState({ result: json });
 	}
 
 	randomPerson = () => {
-		fetch("https://randomuser.me/api/?results=10")
+		fetch("https://randomuser.me/api/?results=25")
 			.then(res => res.json())
 			.then(response => {
 				console.log("response", response);
 				this.setState({ result: response.results });
 			});
-
-		// API.search()
-		//   .then(res => {
-		//     this.setState({ result: res.data.results });
-		//     console.log("result", this.state.result[0]);
-		//     // console.log("res",res);
-		//     // console.log("results", res.data.results);
-		//   })
-		//   .catch(err => console.log(err));
-	};
-
-	handleChange = event => {
-		this.setState({ search: event.target.value }, () => {
-			this.globalSearch();
-		});
 	};
 
 	// handleFormSubmit = event => {
@@ -56,11 +39,19 @@ class Directory extends Component {
 		let filteredResult = result.filter(value => {
 			return (
 				value.name.first.toLowerCase().includes(search.toLowerCase()) ||
-				value.name.last.toLowerCase().includes(search.toLowerCase())
+        value.name.last.toLowerCase().includes(search.toLowerCase()) || 
+        value.email.toLowerCase().includes(search.toLowerCase())
 			);
 		});
 		this.setState({ filteredResult });
 		console.log("filtered result", filteredResult);
+  };
+  
+  handleChange = event => {
+		this.setState({ search: event.target.value }, () => {
+      this.globalSearch();
+      filtered = true;
+		});
 	};
 
 	formatBD = str => {
@@ -69,58 +60,38 @@ class Directory extends Component {
 		return newDate;
 	};
 
-	results = () => {
-		if (this.filteredResult > 0) {
-			return this.state.filteredResult.map(person => (
-				<TRow
-					key={person.login.uuid}
-					firstName={person.name.first}
-					lastName={person.name.last}
-					src={person.picture.thumbnail}
-					email={person.email}
-					phone={person.cell}
-					birthdate={this.formatBD(person.dob.date)}
-				/>
-			));
-		} else {
-      return this.state.result.map(person => (
-        <TRow
-          key={person.login.uuid}
-          firstName={person.name.first}
-          lastName={person.name.last}
-          src={person.picture.thumbnail}
-          email={person.email}
-          phone={person.cell}
-          birthdate={this.formatBD(person.dob.date)}
-        />
-      ));
-    }
-	};
-
 	render() {
 		// ternary
 		// console.log("result", this.state.result);
 		return (
-			<Container>
-				<Input
-					size="large"
-					name="search"
-					value={this.state.search || ""}
-					onChange={this.handleChange}
-					label="Search"
-				/>
-				<table className="table">
-					<thead>
-						<tr>
-							<th scope="col">Photo</th>
-							<th scope="col">Name</th>
-							<th scope="col">Email</th>
-							<th scope="col">Phone #</th>
-							<th scope="col">Birthdate</th>
-						</tr>
-					</thead>
+			// <div>
+				<Container>
+				<div className="jumbotron">
+					<h1 className="display-4">Employee Directory</h1>
+					<p className="lead">
+						Welcome to your Employee Directory! To find someone specific, simply
+						type in the search bar to narrow the list down.
+					</p>
+					<hr className="my-4" />
+					<SearchBar
+						name="search"
+						value={this.state.search || ""}
+						onChange={this.handleChange}
+						label="Search"
+					/>
+				</div>
+					<table className="table">
+						<thead>
+							<tr>
+								<th scope="col">Photo</th>
+								<th scope="col">Name</th>
+								<th scope="col">Email</th>
+								<th scope="col">Phone #</th>
+								<th scope="col">Birthdate</th>
+							</tr>
+						</thead>
 					<tbody>
-						{!this.filteredResult
+						{!filtered
 							? this.state.result.map(person => (
 									<TRow
 										key={person.login.uuid}
@@ -145,16 +116,8 @@ class Directory extends Component {
 							  ))}
 					</tbody>
 				</table>
-				{/* <Col size="md-4">
-						<Card>
-							<SearchForm
-								// value={this.state.search}
-								// handleInputChange={this.handleInputChange}
-								handleFormSubmit={this.handleFormSubmit}
-							/>
-						</Card>
-					</Col> */}
 			</Container>
+      // </div>
 		);
 	}
 }
