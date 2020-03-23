@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Container from "./Container";
 import TRow from "./TRow";
 import SearchBar from "./Search";
+import "../styles.css";
 
 import moment from "moment";
 
@@ -13,7 +14,7 @@ class Directory extends Component {
 		result: [],
 		filteredResult: [],
     search: "",
-    started: false
+    // started: false
 	};
 
 	// getStarted = () => {
@@ -65,7 +66,7 @@ class Directory extends Component {
 
 	render() {
 		// ternary
-		console.log("started", this.state.started);
+		// console.log("started", this.state.started);
 		return (
 			<div className="container">
 				{/* {!this.state.started ? (
@@ -91,9 +92,9 @@ class Directory extends Component {
 						<div className="jumbotron text-center">
 							<h1 className="display-4">Employee Directory</h1>
 							<p className="lead">
-								Welcome to your Employee Directory! To find someone specific,{" "}
-								<br />
-								simply type in the search bar to narrow the list down.
+								Welcome to your Employee Directory! To find someone specific,
+								simply start{" "}
+								<br /> typing their name or email in the search bar to narrow the list down.
 							</p>
 							<hr className="my-4" />
 							<SearchBar
