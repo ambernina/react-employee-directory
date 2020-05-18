@@ -2,6 +2,8 @@
 
 This is a simple employee directory app created using React that has the ability of filtering results. 
 
+![](screenshot.png)
+
 # Deployed Link
 https://cryptic-sierra-98827.herokuapp.com/
 
